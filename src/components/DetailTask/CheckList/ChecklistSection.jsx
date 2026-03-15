@@ -36,7 +36,7 @@ const ChecklistSection = ({ task, onAdd, onToggle, onRemove }) => {
           </div>
         </div>
       ) : (
-        <button onClick={() => setIsAdding(true)} className="flex items-center gap-2 text-gray-600 hover:bg-gray-100 p-2 rounded-lg w-full text-sm">
+        <button onClick={() => setIsAdding(true)} className="flex items-center gap-2 text-gray-600 p-2 rounded-lg w-full text-sm cursor-pointer">
           <Plus size={18} /> Add a item
         </button>
       )}

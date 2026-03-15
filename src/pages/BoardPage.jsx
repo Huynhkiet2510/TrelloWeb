@@ -11,7 +11,8 @@ const BoardPage = () => {
         isAddColumnModal,
         setIsAddColumnModal,
         handleAddColumn,
-        onDragEnd
+        onDragEnd,
+        colsLoading
     } = useColumnAction();
 
     return (
@@ -19,6 +20,7 @@ const BoardPage = () => {
             <Navbar board={board} />
             <div className="flex-1 relative overflow-hidden">
                 <Board
+                    colsLoading={colsLoading}
                     board={board}
                     columns={columns}
                     newColumnTitle={newColumnTitle}

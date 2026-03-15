@@ -79,9 +79,7 @@ const ModalDetailTask = ({ taskId, onClose, onRemove, column }) => {
                     </div>
                 )}
 
-                {/* Main Content Area */}
                 <div className="flex flex-1 overflow-hidden border-t">
-                    {/* Component con cũng sẽ nhận object task từ đây */}
                     <TaskDetailContent task={task} />
                     <TaskDetailSidebar
                         task={task}

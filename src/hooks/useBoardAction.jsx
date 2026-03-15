@@ -4,7 +4,9 @@ import {
   deleteDoc,
   onSnapshot,
   doc,
-  updateDoc
+  updateDoc,
+  query,
+  orderBy
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { db } from "../firebase";
@@ -12,14 +14,19 @@ import { db } from "../firebase";
 export const useBoardAction = () => {
   const [boardList, setBoardList] = useState([]);
   const [newBoard, setNewBoard] = useState("");
-  const [isEditBoard, setIsEditBoard] = useState(null);
+  
+  // State quản lý việc sửa: lưu ID bảng đang sửa và nội dung đang gõ
+  const [editingId, setEditingId] = useState(null);
+  const [editTitle, setEditTitle] = useState("");
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, "boards"), (snapshot) => {
+    // Sắp xếp theo thời gian tạo để bảng mới không bị nhảy lung tung
+    const q = query(collection(db, "boards"), orderBy("createdAt", "desc"));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
       setBoardList(
         snapshot.docs.map((doc) => ({
           id: doc.id,
-          ...doc.data()
+          ...doc.data(),
         }))
       );
     });
@@ -27,37 +34,55 @@ export const useBoardAction = () => {
     return () => unsubscribe();
   }, []);
 
-  const handleSave = async () => {
+  const handleAdd = async () => {
     if (!newBoard.trim()) return;
+    const titleToSave = newBoard;
+    setNewBoard(""); // Clear input ngay để UX mượt hơn
 
     try {
-      if (isEditBoard) {
-        const boardRef = doc(db, "boards", isEditBoard);
-
-        await updateDoc(boardRef, {
-          title: newBoard
-        });
-
-        setIsEditBoard(null);
-      } else {
-        await addDoc(collection(db, "boards"), {
-          title: newBoard,
-          createdAt: Date.now(),
-          background:
-            "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba"
-        });
-      }
-      setNewBoard("");
+      await addDoc(collection(db, "boards"), {
+        title: titleToSave,
+        createdAt: Date.now(),
+        background: "https://static.vecteezy.com/system/resources/previews/002/098/380/non_2x/silhouette-forest-landscape-flat-design-with-gradient-illustration-background-free-vector.jpg"
+      });
     } catch (error) {
       console.error("Save board error:", error);
     }
   };
 
-  const handleRemove = async (boardId) => {
+  const handleRemove = async (e, boardId) => {
+    if (e && e.stopPropagation) e.stopPropagation();
+    if (!window.confirm("Bạn có chắc chắn muốn xóa bảng này?")) return;
+
     try {
       await deleteDoc(doc(db, "boards", boardId));
     } catch (error) {
-      console.log("Delete board error:", error);
+      console.error("Delete board error:", error);
+    }
+  };
+
+  // Kích hoạt chế độ sửa
+  const startEdit = (e, board) => {
+    e.stopPropagation();
+    setEditingId(board.id);
+    setEditTitle(board.title);
+  };
+
+  // Lưu nội dung sau khi sửa lên Firebase
+  const handleUpdate = async (boardId) => {
+    if (!editTitle.trim()) {
+      setEditingId(null);
+      return;
+    }
+
+    try {
+      const boardRef = doc(db, "boards", boardId);
+      await updateDoc(boardRef, {
+        title: editTitle
+      });
+      setEditingId(null);
+    } catch (error) {
+      console.error("Update board error:", error);
     }
   };
 
@@ -65,9 +90,13 @@ export const useBoardAction = () => {
     boardList,
     newBoard,
     setNewBoard,
-    handleSave,
+    handleAdd,
     handleRemove,
-    isEditBoard,
-    setIsEditBoard
+    editingId,
+    setEditingId,
+    editTitle,
+    setEditTitle,
+    startEdit,
+    handleUpdate
   };
 };
