@@ -10,22 +10,20 @@ const Column = ({ column }) => {
     const { handleRemoveColumn, handleUpdateColumnTitle } = useColumnAction();
     const [isEditingTitle, setIsEditingTitle] = useState(false);
     const [titleValue, setTitleValue] = useState(column.title);
-    
+
 
     const {
-        tasks, 
+        tasks,
         isOpenTaskModal,
         setIsOpenTaskModal,
         selectedTask,
         setSelectedTask,
-        isEditTaskTitle,
         newTaskTitle,
         setNewTaskTitle,
-        handleEditTask,
         handleSave,
         handleRemoveTask,
         handleKeyDown,
-    } = useTaskAction(column?.id); 
+    } = useTaskAction(column?.id);
 
     const handleUpdateTitle = () => {
         if (titleValue.trim() !== "" && titleValue !== column.title) {
@@ -64,7 +62,6 @@ const Column = ({ column }) => {
                 </button>
             </div>
 
-            {/* Droppable Area */}
             <Droppable droppableId={column?.id}>
                 {(provided) => (
                     <div
@@ -73,21 +70,19 @@ const Column = ({ column }) => {
                         className="flex-1 overflow-y-auto flex flex-col gap-2 pr-1 min-h-[10px]"
                     >
                         {tasks.map((task, index) => (
-                             <TaskCard
-                                    key={task.id}
-                                    task={task}
-                                    index={index}
-                                    onEdit={handleEditTask}                        
-                                    onClick={() => setSelectedTask(task.id)} 
-                                   
-                                />
+                            <TaskCard
+                                key={task.id}
+                                task={task}
+                                index={index}
+                                onClick={() => setSelectedTask(task.id)}
+
+                            />
                         ))}
                         {provided.placeholder}
                     </div>
                 )}
             </Droppable>
 
-            {/* Add/Edit Task Input Area */}
             {!isOpenTaskModal ? (
                 <button
                     onClick={() => setIsOpenTaskModal(true)}
@@ -110,10 +105,13 @@ const Column = ({ column }) => {
                             onClick={handleSave}
                             className="bg-blue-600 hover:bg-blue-700 px-4 py-1.5 rounded text-white text-sm font-medium transition active:scale-95 shadow-sm"
                         >
-                           {isEditTaskTitle ? "Save" : "Add"}
+                            Add
                         </button>
                         <button
-                            onClick={() => setIsOpenTaskModal(false)}
+                            onClick={() => {
+                                setIsOpenTaskModal(false),
+                                    setNewTaskTitle("")
+                            }}
                             className="p-1.5 hover:bg-gray-200 rounded-md transition text-gray-500"
                         >
                             <X size={20} />
@@ -124,7 +122,7 @@ const Column = ({ column }) => {
 
             {selectedTask && (
                 <TaskDetailModal
-                column={column}
+                    column={column}
                     taskId={selectedTask}
                     onRemove={handleRemoveTask}
                     onClose={() => setSelectedTask(null)}

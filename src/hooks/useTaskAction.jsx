@@ -1,23 +1,22 @@
 import { useState, useEffect } from "react";
-import { 
-  collection, query, where, onSnapshot, orderBy, 
-  addDoc, deleteDoc, updateDoc, doc 
+import {
+  collection, query, where, onSnapshot, orderBy,
+  addDoc, deleteDoc, updateDoc, doc
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { useDispatch, useSelector } from "react-redux";
-import { setTasks } from "../stores/taskSlice";
+import { removeTask, setTasks, updateTask, addTask } from "../stores/taskSlice";
 
 export const useTaskAction = (columnId) => {
   const dispatch = useDispatch();
-  
+
   const allTasks = useSelector((state) => state.task.tasks);
   const tasks = allTasks.filter(t => t.columnId === columnId);
 
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [isOpenTaskModal, setIsOpenTaskModal] = useState(false);
   const [isEditTaskTitle, setIsEditTaskTitle] = useState(null);
-  
-  const [selectedTask, setSelectedTask] = useState(null); 
+  const [selectedTask, setSelectedTask] = useState(null);
 
   useEffect(() => {
     if (!columnId) return;
@@ -29,11 +28,11 @@ export const useTaskAction = (columnId) => {
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const tasksData = snapshot.docs.map((doc) => ({ 
-        id: doc.id, 
-        ...doc.data() 
+      const tasksData = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data()
       }));
-      dispatch(setTasks(tasksData));
+      dispatch(setTasks({ columnId, tasks: tasksData }));
     });
 
     return () => unsubscribe();
@@ -42,41 +41,55 @@ export const useTaskAction = (columnId) => {
   const handleEditTask = (task) => {
     setNewTaskTitle(task.title);
     setIsEditTaskTitle(task.id);
-    setIsOpenTaskModal(true);
   };
 
   const handleSave = async () => {
     if (!newTaskTitle.trim()) return;
     const title = newTaskTitle.trim();
-    
+
     setIsOpenTaskModal(false);
+    setIsEditTaskTitle(null);
     setNewTaskTitle("");
+
+    const newTask = {
+      id: Date.now().toString(),
+      title,
+      columnId,
+      description: "",
+      checklists: [],
+      order: Date.now(),
+      createdAt: Date.now()
+    };
 
     try {
       if (isEditTaskTitle) {
+        dispatch(updateTask({ id: isEditTaskTitle, title }));
         await updateDoc(doc(db, "tasks", isEditTaskTitle), { title });
         setIsEditTaskTitle(null);
       } else {
+        dispatch(addTask(newTask));
         await addDoc(collection(db, "tasks"), {
-          title,
-          columnId,
-          description: "",
-          checklists: [],
-          order: Date.now(),
-          createdAt: Date.now()
+          title: newTask.title,
+          columnId: newTask.columnId,
+          description: newTask.description,
+          checklists: newTask.checklists,
+          order: newTask.order,
+          createdAt: newTask.createdAt
         });
       }
     } catch (error) {
-      console.error("Lỗi khi lưu task:", error);
+      console.error("Error saving task:", error);
     }
   };
 
   const handleRemoveTask = async (taskId) => {
+    dispatch(removeTask(taskId));
+    setSelectedTask(null);
+
     try {
       await deleteDoc(doc(db, "tasks", taskId));
-      setSelectedTask(null); // Đóng modal sau khi xóa
     } catch (error) {
-      console.error("Lỗi khi xóa task:", error);
+      console.error("Error deleting task:", error);
     }
   };
 

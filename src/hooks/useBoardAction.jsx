@@ -10,17 +10,16 @@ import {
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { db } from "../firebase";
+import bg from "../assets/bg.jpg";
 
 export const useBoardAction = () => {
   const [boardList, setBoardList] = useState([]);
   const [newBoard, setNewBoard] = useState("");
   
-  // State quản lý việc sửa: lưu ID bảng đang sửa và nội dung đang gõ
   const [editingId, setEditingId] = useState(null);
   const [editTitle, setEditTitle] = useState("");
 
   useEffect(() => {
-    // Sắp xếp theo thời gian tạo để bảng mới không bị nhảy lung tung
     const q = query(collection(db, "boards"), orderBy("createdAt", "desc"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       setBoardList(
@@ -50,8 +49,7 @@ export const useBoardAction = () => {
     }
   };
 
-  const handleRemove = async (e, boardId) => {
-    if (e && e.stopPropagation) e.stopPropagation();
+  const handleRemove = async (boardId) => {
     if (!window.confirm("Bạn có chắc chắn muốn xóa bảng này?")) return;
 
     try {
@@ -61,14 +59,12 @@ export const useBoardAction = () => {
     }
   };
 
-  // Kích hoạt chế độ sửa
   const startEdit = (e, board) => {
     e.stopPropagation();
     setEditingId(board.id);
     setEditTitle(board.title);
   };
 
-  // Lưu nội dung sau khi sửa lên Firebase
   const handleUpdate = async (boardId) => {
     if (!editTitle.trim()) {
       setEditingId(null);

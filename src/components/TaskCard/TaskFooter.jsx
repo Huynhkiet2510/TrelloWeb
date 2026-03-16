@@ -1,6 +1,6 @@
 import { Clock, Pencil, FilePen, CheckSquare } from "lucide-react";
 
-const TaskFooter = ({ dueDate, checklists, onEdit, onClick }) => {
+const TaskFooter = ({ dueDate, checklists, onClick }) => {
     const formatVietnameseDate = (dateString) => {
         if (!dateString) return "";
         const date = new Date(dateString);
@@ -29,9 +29,6 @@ const TaskFooter = ({ dueDate, checklists, onEdit, onClick }) => {
             </div>
 
             <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button onClick={onEdit} className="p-1 hover:bg-gray-100 rounded text-green-600">
-                    <Pencil size={14} />
-                </button>
                 <button onClick={onClick} className="p-1 hover:bg-gray-100 rounded text-yellow-600">
                     <FilePen size={14} />
                 </button>
