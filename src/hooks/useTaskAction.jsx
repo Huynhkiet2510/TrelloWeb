@@ -6,6 +6,7 @@ import {
 import { db } from "../firebase";
 import { useDispatch, useSelector } from "react-redux";
 import { removeTask, setTasks, updateTask, addTask } from "../stores/taskSlice";
+import { useParams } from "react-router-dom";
 
 export const useTaskAction = (columnId) => {
   const dispatch = useDispatch();
@@ -17,7 +18,9 @@ export const useTaskAction = (columnId) => {
   const [isOpenTaskModal, setIsOpenTaskModal] = useState(false);
   const [isEditTaskTitle, setIsEditTaskTitle] = useState(null);
   const [selectedTask, setSelectedTask] = useState(null);
-
+  
+  const { boardId } = useParams();
+  
   useEffect(() => {
     if (!columnId) return;
 
@@ -52,7 +55,7 @@ export const useTaskAction = (columnId) => {
     setNewTaskTitle("");
 
     const newTask = {
-      id: Date.now().toString(),
+      boardId,
       title,
       columnId,
       description: "",
@@ -69,6 +72,7 @@ export const useTaskAction = (columnId) => {
       } else {
         dispatch(addTask(newTask));
         await addDoc(collection(db, "tasks"), {
+          boardId: newTask.boardId,
           title: newTask.title,
           columnId: newTask.columnId,
           description: newTask.description,

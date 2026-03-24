@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Tag, Trash2 } from "lucide-react";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase";
-import Labels from "../Labels/Labels";
+import Labels from "./Labels/Labels";
 import DateSection from "../Date/DateSection";
 
 const TaskDetailSidebar = ({ task, onRemove }) => {
@@ -34,9 +34,8 @@ const TaskDetailSidebar = ({ task, onRemove }) => {
       <div className="flex flex-col gap-2 relative">
         <button
           onClick={() => setIsOpenLabel((prev) => !prev)}
-          className={`flex items-center gap-2 p-2 rounded text-sm transition ${
-            isOpenLabel ? "bg-blue-100 text-blue-700" : "bg-gray-200 hover:bg-gray-300"
-          }`}
+          className={`flex items-center gap-2 p-2 rounded text-sm transition ${isOpenLabel ? "bg-blue-100 text-blue-700" : "bg-gray-200 hover:bg-gray-300"
+            }`}
         >
           <Tag size={16} /> Label
         </button>
@@ -55,7 +54,7 @@ const TaskDetailSidebar = ({ task, onRemove }) => {
       <h3 className="text-xs font-bold text-gray-500 uppercase mt-8 mb-3">Action</h3>
 
       <button
-        onClick={() =>  onRemove(task.id)}
+        onClick={() => onRemove(task.id)}
         className="flex items-center gap-2 bg-red-100 text-red-700 p-2 rounded text-sm w-full hover:bg-red-200 transition"
       >
         <Trash2 size={16} /> Delete Task

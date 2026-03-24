@@ -4,20 +4,52 @@ import {
   deleteDoc,
   onSnapshot,
   doc,
+  where,
+  getDocs,
   updateDoc,
+  writeBatch,
   query,
   orderBy
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { db } from "../firebase";
-import bg from "../assets/bg.jpg";
+import { useParams } from "react-router-dom";
 
 export const useBoardAction = () => {
   const [boardList, setBoardList] = useState([]);
   const [newBoard, setNewBoard] = useState("");
-  
+
   const [editingId, setEditingId] = useState(null);
   const [editTitle, setEditTitle] = useState("");
+  const [board, setBoard] = useState(null);
+  const [boardLoading, setBoardLoading] = useState(true);
+  const [boardError, setBoardError] = useState(null);
+
+  const { boardId } = useParams();
+
+  useEffect(() => {
+    if (!boardId) return;
+    setBoardLoading(true);
+
+    const unsubscribe = onSnapshot(
+      doc(db, "boards", boardId),
+      (docSnap) => {
+        if (docSnap.exists()) {
+          setBoard({ id: docSnap.id, ...docSnap.data() });
+        } else {
+          setBoardError("Bảng không tồn tại!");
+        }
+        setBoardLoading(false);
+      },
+      (err) => {
+        console.error("Board Error:", err);
+        setBoardError("Lỗi kết nối bảng.");
+        setBoardLoading(false);
+      }
+    );
+
+    return () => unsubscribe();
+  }, [boardId]);
 
   useEffect(() => {
     const q = query(collection(db, "boards"), orderBy("createdAt", "desc"));
@@ -36,13 +68,12 @@ export const useBoardAction = () => {
   const handleAdd = async () => {
     if (!newBoard.trim()) return;
     const titleToSave = newBoard;
-    setNewBoard(""); // Clear input ngay để UX mượt hơn
+    setNewBoard("");
 
     try {
       await addDoc(collection(db, "boards"), {
         title: titleToSave,
         createdAt: Date.now(),
-        background: "https://static.vecteezy.com/system/resources/previews/002/098/380/non_2x/silhouette-forest-landscape-flat-design-with-gradient-illustration-background-free-vector.jpg"
       });
     } catch (error) {
       console.error("Save board error:", error);
@@ -50,12 +81,27 @@ export const useBoardAction = () => {
   };
 
   const handleRemove = async (boardId) => {
-    if (!window.confirm("Bạn có chắc chắn muốn xóa bảng này?")) return;
+    if (!window.confirm("Bạn có chắc chắn muốn xóa bảng này và tất cả dữ liệu liên quan?")) return;
 
     try {
-      await deleteDoc(doc(db, "boards", boardId));
+      const batch = writeBatch(db);
+      const collectionsToClean = ["tasks", "columns", "labels"];
+
+      for (const colName of collectionsToClean) {
+        const q = query(collection(db, colName), where("boardId", "==", boardId));
+        const querySnapshot = await getDocs(q);
+
+        querySnapshot.forEach((document) => {
+          batch.delete(document.ref);
+        });
+      }
+
+      const boardRef = doc(db, "boards", boardId);
+      batch.delete(boardRef);
+      await batch.commit();
     } catch (error) {
-      console.error("Delete board error:", error);
+      console.error("Lỗi khi xóa bảng:", error);
+      alert("Có lỗi xảy ra khi xóa dữ liệu.");
     }
   };
 
@@ -83,6 +129,9 @@ export const useBoardAction = () => {
   };
 
   return {
+    board,
+    boardLoading,
+    boardError,
     boardList,
     newBoard,
     setNewBoard,

@@ -48,7 +48,6 @@ const BoardList = () => {
         {boardList.map((board) => (
           <div
             key={board.id}
-            onClick={() => navigate(`/board/${board.id}`)}
             className="h-28 bg-white rounded-md p-4 cursor-pointer shadow-sm flex flex-col justify-between transition-all group relative"
           >
             {editingId === board.id ? (
@@ -84,7 +83,9 @@ const BoardList = () => {
               </div>
             )}
 
-            <div className="text-[10px] text-gray-700 uppercase tracking-widest opacity-60 font-semibold">
+            <div
+              onClick={() => navigate(`/board/${board.id}`)}
+              className="text-[10px] text-gray-700 uppercase hover:text-blue-600 tracking-widest opacity-60 font-semibold">
               View Detail
             </div>
           </div>

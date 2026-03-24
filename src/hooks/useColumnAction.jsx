@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { db } from '../firebase';
-import { 
-    collection, query, orderBy, onSnapshot, addDoc, 
-    doc, updateDoc, writeBatch, where, getDocs 
+import {
+    collection, query, orderBy, onSnapshot, addDoc,
+    doc, updateDoc, writeBatch, where, getDocs
 } from 'firebase/firestore';
 import { useDispatch } from 'react-redux';
 import { setLabels } from '../stores/labelSlice';
@@ -13,37 +13,10 @@ export const useColumnAction = () => {
     const dispatch = useDispatch();
 
     const [columns, setColumns] = useState([]);
-    const [board, setBoard] = useState(null);
     const [newColumnTitle, setNewColumnTitle] = useState("");
     const [isAddColumnModal, setIsAddColumnModal] = useState(false);
-    
-    const [boardLoading, setBoardLoading] = useState(true);
     const [colsLoading, setColsLoading] = useState(true);
-    const [error, setError] = useState(null);
 
-    useEffect(() => {
-        if (!boardId) return;
-        setBoardLoading(true);
-        
-        const unsubscribe = onSnapshot(
-            doc(db, "boards", boardId),
-            (docSnap) => {
-                if (docSnap.exists()) {
-                    setBoard({ id: docSnap.id, ...docSnap.data() });
-                } else {
-                    setError("Bảng không tồn tại!");
-                }
-                setBoardLoading(false);
-            },
-            (err) => {
-                console.error("Board Error:", err);
-                setError("Lỗi kết nối bảng.");
-                setBoardLoading(false);
-            }
-        );
-
-        return () => unsubscribe();
-    }, [boardId]);
 
     useEffect(() => {
         if (!boardId) return;
@@ -60,11 +33,11 @@ export const useColumnAction = () => {
             where("boardId", "==", boardId)
         );
 
-        const unsubscribeColumns = onSnapshot(qColumns, 
+        const unsubscribeColumns = onSnapshot(qColumns,
             (snapshot) => {
                 const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 setColumns(data);
-                setColsLoading(false); 
+                setColsLoading(false);
             },
             (err) => {
                 console.error("Column Error:", err);
@@ -72,7 +45,7 @@ export const useColumnAction = () => {
             }
         );
 
-        const unsubscribeLabels = onSnapshot(qLabels, 
+        const unsubscribeLabels = onSnapshot(qLabels,
             (snapshot) => {
                 const labelData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 dispatch(setLabels(labelData));
@@ -92,12 +65,12 @@ export const useColumnAction = () => {
         if (!title) return;
 
         try {
-            setNewColumnTitle(""); 
+            setNewColumnTitle("");
             setIsAddColumnModal(false);
-            
+
             await addDoc(collection(db, "columns"), {
                 title: title,
-                order: Date.now(), 
+                order: Date.now(),
                 boardId: boardId,
             });
         } catch (err) {
@@ -111,7 +84,7 @@ export const useColumnAction = () => {
 
         try {
             const batch = writeBatch(db);
-            
+
             const tasksQuery = query(collection(db, "tasks"), where("columnId", "==", columnId));
             const taskSnapshots = await getDocs(tasksQuery);
             taskSnapshots.forEach((taskDoc) => batch.delete(taskDoc.ref));
@@ -141,7 +114,7 @@ export const useColumnAction = () => {
         try {
             await updateDoc(doc(db, "tasks", draggableId), {
                 columnId: destination.droppableId,
-                order: Date.now() 
+                order: Date.now()
             });
         } catch (err) {
             console.error("Lỗi kéo thả:", err);
@@ -149,11 +122,8 @@ export const useColumnAction = () => {
     };
 
     return {
-        board,
         columns,
-        boardLoading,
         colsLoading,
-        error,
         newColumnTitle,
         setNewColumnTitle,
         isAddColumnModal,

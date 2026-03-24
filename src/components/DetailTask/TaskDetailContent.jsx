@@ -4,6 +4,7 @@ import DescriptionSection from './Description/DescriptionSection';
 import ChecklistSection from './CheckList/ChecklistSection';
 
 const TaskDetailContent = ({ task }) => {
+  
   const { updateDescription, addChecklistItem, toggleChecklistItem, removeChecklistItem } = useDetailTaskActions(task);
 
   if (!task) return <div className="p-6 text-gray-500 text-center">Đang tải dữ liệu...</div>;

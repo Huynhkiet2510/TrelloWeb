@@ -60,6 +60,7 @@ export const useLabelAction = (task) => {
     };
 
     const handleRemove = async (labelId) => {
+        setIsEditorOpen(false);
         try {
             await deleteDoc(doc(db, "labels", labelId));
         } catch (error) {

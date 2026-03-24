@@ -29,7 +29,7 @@ const ChecklistSection = ({ task, onAdd, onToggle, onRemove }) => {
 
       {isAdding ? (
         <div className='mt-2'>
-          <textarea autoFocus value={text} onChange={(e) => setText(e.target.value)} placeholder='Enter your item...' className="w-full p-2 border-2 border-blue-500 rounded min-h-[80px]" />
+          <textarea autoFocus value={text} onChange={(e) => setText(e.target.value)} placeholder='Enter your item...' className="w-full p-2 border-2 focus:border-blue-500 rounded min-h-[80px] outline-none" />
           <div className="flex gap-2 mt-2">
             <button onClick={handleAdd} className="bg-green-600 text-white px-4 py-1.5 rounded text-sm">Save</button>
             <button onClick={() => setIsAdding(false)} className="p-1.5 hover:bg-gray-200 rounded"><X size={20} /></button>
