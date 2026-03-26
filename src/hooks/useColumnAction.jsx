@@ -80,8 +80,6 @@ export const useColumnAction = () => {
     };
 
     const handleRemoveColumn = async (columnId) => {
-        if (!window.confirm("Xóa cột này sẽ xóa sạch các thẻ bên trong. Chắc chắn chứ?")) return;
-
         try {
             const batch = writeBatch(db);
 

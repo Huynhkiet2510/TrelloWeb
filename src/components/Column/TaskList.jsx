@@ -8,7 +8,7 @@ const TaskList = ({ columnId, tasks, onTaskClick }) => (
             <div
                 ref={provided.innerRef}
                 {...provided.droppableProps}
-                className="flex-1 overflow-y-auto flex flex-col gap-2 pr-1 min-h-[10px]"
+                className="flex-1 overflow-y-auto flex flex-col gap-1 pr-1 min-h-[10px]"
             >
                 {tasks.map((task, index) => (
                     <TaskCard

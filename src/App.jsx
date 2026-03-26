@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import BoardPage from "./pages/BoardPage";
-import BoardListPage from "./pages/BoardList";
+import BoardListPage from "./pages/BoardList/BoardList";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 

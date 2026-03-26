@@ -2,9 +2,10 @@ import React from 'react';
 import { useDetailTaskActions } from '../../hooks/useDetailTaskActions';
 import DescriptionSection from './Description/DescriptionSection';
 import ChecklistSection from './CheckList/ChecklistSection';
+import Attachment from "./Attachment/Attachment"
 
 const TaskDetailContent = ({ task }) => {
-  
+
   const { updateDescription, addChecklistItem, toggleChecklistItem, removeChecklistItem } = useDetailTaskActions(task);
 
   if (!task) return <div className="p-6 text-gray-500 text-center">Đang tải dữ liệu...</div>;
@@ -17,13 +18,15 @@ const TaskDetailContent = ({ task }) => {
           initialDescription={task.description}
           onSave={updateDescription}
         />
+        <Attachment taskId={task.id} showList={true} showUpload={false} />
+
       </div>
 
       <ChecklistSection
         task={task}
         onAdd={addChecklistItem}
         onToggle={toggleChecklistItem}
-        onRemove={(id) => window.confirm("Xóa nhé?") && removeChecklistItem(id)}
+        onRemove={removeChecklistItem}
       />
     </div>
   );

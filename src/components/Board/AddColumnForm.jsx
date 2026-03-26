@@ -10,7 +10,7 @@ const AddColumnForm = ({
             <div className="shrink-0">
                 <button
                     onClick={() => setIsAdding(true)}
-                    className="bg-white/20 hover:bg-white/30 text-white min-w-[280px] h-12 rounded-lg transition-colors flex items-center px-4 font-medium"
+                    className="bg-white/40 hover:bg-white/30 text-white min-w-[280px] h-12 rounded-lg transition"
                 >
                     + Add a column
                 </button>
@@ -36,7 +36,7 @@ const AddColumnForm = ({
                         type="submit" 
                         className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded text-sm font-medium transition"
                     >
-                        Add list
+                        Add 
                     </button>
                     <button 
                         type="button" 

@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
+import ConfirmModal from "../ConfirmModal/ConfirmModal"
 
 const ColumnHeader = ({ title, columnId, onUpdateTitle, onRemoveColumn }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [value, setValue] = useState(title);
+    const [showConfirm, setShowConfirm] = useState(false);
 
     const handleSubmit = () => {
         if (value.trim() !== "" && value !== title) {
@@ -32,11 +34,19 @@ const ColumnHeader = ({ title, columnId, onUpdateTitle, onRemoveColumn }) => {
                 </h2>
             )}
             <button
-                onClick={() => onRemoveColumn(columnId)}
+                onClick={() => setShowConfirm(true)}
                 className="text-gray-400 hover:text-red-500 hover:bg-red-50 p-1 rounded-md transition-all opacity-0 group-hover:opacity-100"
             >
                 <X size={18} />
             </button>
+
+            <ConfirmModal
+                isOpen={showConfirm}
+                title="Xóa cột này?"
+                message="Toàn bộ task của cột này sẽ mất"
+                onConfirm={() => onRemoveColumn(columnId)}
+                onCancel={() => setShowConfirm(false)}
+            />
         </div>
     );
 };

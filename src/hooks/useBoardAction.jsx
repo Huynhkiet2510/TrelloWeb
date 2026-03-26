@@ -22,14 +22,13 @@ export const useBoardAction = () => {
   const [editingId, setEditingId] = useState(null);
   const [editTitle, setEditTitle] = useState("");
   const [board, setBoard] = useState(null);
-  const [boardLoading, setBoardLoading] = useState(true);
+  const [boardLoading, setBoardLoading] = useState(false);
   const [boardError, setBoardError] = useState(null);
 
   const { boardId } = useParams();
 
   useEffect(() => {
     if (!boardId) return;
-    setBoardLoading(true);
 
     const unsubscribe = onSnapshot(
       doc(db, "boards", boardId),
@@ -37,30 +36,38 @@ export const useBoardAction = () => {
         if (docSnap.exists()) {
           setBoard({ id: docSnap.id, ...docSnap.data() });
         } else {
-          setBoardError("Bảng không tồn tại!");
+          setBoard(null);
         }
-        setBoardLoading(false);
-      },
-      (err) => {
-        console.error("Board Error:", err);
-        setBoardError("Lỗi kết nối bảng.");
-        setBoardLoading(false);
       }
     );
 
     return () => unsubscribe();
   }, [boardId]);
 
+
   useEffect(() => {
+    setBoardLoading(true);
+    setBoardError(null);
+
     const q = query(collection(db, "boards"), orderBy("createdAt", "desc"));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      setBoardList(
-        snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }))
-      );
-    });
+
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        setBoardList(
+          snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }))
+        );
+        setBoardLoading(false);
+      },
+      (err) => {
+        console.error("Board List Error:", err);
+        setBoardError("Lỗi tải danh sách bảng.");
+        setBoardLoading(false);
+      }
+    );
 
     return () => unsubscribe();
   }, []);
@@ -81,8 +88,6 @@ export const useBoardAction = () => {
   };
 
   const handleRemove = async (boardId) => {
-    if (!window.confirm("Bạn có chắc chắn muốn xóa bảng này và tất cả dữ liệu liên quan?")) return;
-
     try {
       const batch = writeBatch(db);
       const collectionsToClean = ["tasks", "columns", "labels"];
