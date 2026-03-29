@@ -1,52 +1,93 @@
-import { doc, updateDoc } from 'firebase/firestore';
+import { 
+  doc, updateDoc, deleteDoc, addDoc, collection, 
+  serverTimestamp, writeBatch, query, where, getDocs 
+} from 'firebase/firestore';
 import { db } from '../firebase';
-export const useDetailTaskActions = (task) => {
 
+export const useDetailTaskActions = (task) => {
 
   const updateDescription = async (newDescription) => {
     try {
       const taskRef = doc(db, "tasks", task.id);
       await updateDoc(taskRef, { description: newDescription });
     } catch (error) {
-      console.log(error)
+      console.error("Lỗi cập nhật description:", error);
     }
   };
 
-  const addChecklistItem = async (text) => {
-    const newItem = { id: Date.now(), text, isDone: false };
-
+  const addChecklist = async (taskId, title) => {
+    if (!title.trim()) return;
     try {
-      const taskRef = doc(db, "tasks", task.id);
-      const updatedChecklists = [...(task.checklists || []), newItem];
-      await updateDoc(taskRef, { checklists: updatedChecklists });
+      await addDoc(collection(db, "checklists"), {
+        taskId,
+        title,
+        createdAt: serverTimestamp(), 
+      });
     } catch (error) {
-      console.log(error)
+      console.error("Lỗi thêm checklist:", error);
     }
   };
 
-  const toggleChecklistItem = async (itemId) => {
-
+  const removeChecklist = async (checklistId) => {
     try {
-      const taskRef = doc(db, "tasks", task.id);
-      const updated = task.checklists.map(item =>
-        item.id === itemId ? { ...item, isDone: !item.isDone } : item
+      const batch = writeBatch(db);
+      
+      const checklistRef = doc(db, "checklists", checklistId);
+      batch.delete(checklistRef);
+
+      const itemsQuery = query(
+        collection(db, "checklistItems"), 
+        where("checklistId", "==", checklistId)
       );
-      await updateDoc(taskRef, { checklists: updated });
+      const itemsSnapshot = await getDocs(itemsQuery);
+      itemsSnapshot.forEach((itemDoc) => {
+        batch.delete(itemDoc.ref);
+      });
+
+      await batch.commit();
     } catch (error) {
-      console.log(error)
+      console.error("Lỗi khi xóa checklist và items:", error);
+    }
+  };
+
+  const addChecklistItem = async (checklistId, text) => {
+    if (!text.trim()) return;
+    try {
+      await addDoc(collection(db, "checklistItems"), {
+        taskId: task.id,
+        checklistId: checklistId,
+        text: text,
+        isDone: false,
+        createdAt: serverTimestamp(),
+      });
+    } catch (error) {
+      console.error("Lỗi thêm checklist item:", error);
+    }
+  };
+
+  const toggleChecklistItem = async (itemId, currentStatus) => {
+    try {
+      const ref = doc(db, "checklistItems", itemId);
+      await updateDoc(ref, { isDone: !currentStatus });
+    } catch (error) {
+      console.error("Lỗi cập nhật trạng thái item:", error);
     }
   };
 
   const removeChecklistItem = async (itemId) => {
     try {
-      const taskRef = doc(db, "tasks", task.id);
-      const updated = task.checklists.filter(item => item.id !== itemId);
-      await updateDoc(taskRef, { checklists: updated });
+      await deleteDoc(doc(db, "checklistItems", itemId));
     } catch (error) {
-      console.log(error)
-
+      console.error("Lỗi xóa checklist item:", error);
     }
   };
 
-  return { updateDescription, addChecklistItem, toggleChecklistItem, removeChecklistItem };
+  return { 
+    updateDescription, 
+    addChecklist, 
+    removeChecklist, 
+    addChecklistItem, 
+    toggleChecklistItem, 
+    removeChecklistItem 
+  };
 };

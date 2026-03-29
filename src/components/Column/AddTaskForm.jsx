@@ -19,14 +19,17 @@ const AddTaskForm = ({ isOpen, setIsOpen, title, setTitle, onSave, onKeyDown }) 
                 autoFocus
                 placeholder="Nhập nội dung thẻ..."
                 value={title}
+
                 onChange={(e) => setTitle(e.target.value)}
                 onKeyDown={onKeyDown}
                 className="w-full p-2 bg-white border-2 border-blue-500 rounded-lg outline-none shadow-sm text-sm min-h-[80px] resize-none"
             />
             <div className="flex items-center gap-2 mt-2">
                 <button
+                    disabled={!title.trim()}
                     onClick={onSave}
-                    className="bg-green-600 hover:bg-green-700 px-4 py-1.5 rounded text-white text-sm font-medium transition shadow-sm"
+                    className="bg-green-600 hover:bg-green-700 px-4 py-1.5 rounded text-white text-sm font-medium transition shadow-sm
+                  disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
                 >
                     Add
                 </button>

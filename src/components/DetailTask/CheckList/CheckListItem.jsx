@@ -31,10 +31,10 @@ const ChecklistItem = ({ item, onRemove, onToggle }) => {
           </span>
         </div>
 
-        <X 
-          size={16} 
-          onClick={() => setShowConfirm(true)} 
-          className="text-gray-400 cursor-pointer hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity" 
+        <X
+          size={16}
+          onClick={() => setShowConfirm(true)}
+          className="text-gray-400 cursor-pointer hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
         />
       </li>
 

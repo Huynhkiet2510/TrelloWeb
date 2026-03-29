@@ -58,8 +58,6 @@ const BoardList = () => {
           </>
         )}
       </div>
-      
-
     </div>
   );
 };

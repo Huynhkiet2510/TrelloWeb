@@ -4,8 +4,10 @@ import { selectTaskById } from "../../stores/taskSlice";
 import TaskDetailContent from "./TaskDetailContent";
 import TaskDetailSidebar from "./TaskDetailSidebar";
 import TaskDetailHeader from "./TaskDetailHeader";
+import { useState } from "react";
 
 const ModalDetailTask = ({ taskId, onClose, onRemove, column }) => {
+    const [uploadingFile, setUploadingFile] = useState(null);
 
     const task = useSelector((state) => selectTaskById(state, taskId));
     const allLabels = useSelector((state) => state.label.items);
@@ -20,11 +22,11 @@ const ModalDetailTask = ({ taskId, onClose, onRemove, column }) => {
 
     return (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 transition-opacity">
-      
+
 
             <div className="bg-white w-[900px] h-[700px] rounded-xl shadow-2xl flex flex-col overflow-hidden relative z-10">
 
-                <TaskDetailHeader column={column} task={task}  onClose={onClose}/>
+                <TaskDetailHeader column={column} task={task} onClose={onClose} />
 
                 {hasTaskInfo && (
                     <div className="px-10 py-4 grid grid-cols-2 gap-8">
@@ -64,12 +66,18 @@ const ModalDetailTask = ({ taskId, onClose, onRemove, column }) => {
                 )}
 
                 <div className="flex flex-1 overflow-hidden border-t">
-                    <TaskDetailContent task={task} />
+                    <TaskDetailContent
+                        task={task}
+                        setUploadingFile={setUploadingFile}
+                        uploadingFile={uploadingFile}
+                    />
 
                     <TaskDetailSidebar
                         task={task}
                         onClose={onClose}
                         onRemove={onRemove}
+                        setUploadingFile={setUploadingFile}
+                        uploadingFile={uploadingFile}
                     />
                 </div>
             </div>

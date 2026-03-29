@@ -6,11 +6,12 @@ import Labels from "./Labels/Labels";
 import DateSection from "./Date/DateSection";
 import ConfirmModal from '../ConfirmModal/ConfirmModal';
 import Attachment from "./Attachment/Attachment";
+import CheckList from "./CheckList/CheckList";
 
-const TaskDetailSidebar = ({ task, onRemove }) => {
+const TaskDetailSidebar = ({ task, onRemove, uploadingFile, setUploadingFile }) => {
   const [isOpenLabel, setIsOpenLabel] = useState(false);
+  const [isOpenCheckList, setIsOpenCheckList] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [isOpenAttachment, setIsOpenAttachment] = useState(false);
 
   const handleToggleLabel = async (labelId) => {
     const currentLabels = task.labels || [];
@@ -54,13 +55,21 @@ const TaskDetailSidebar = ({ task, onRemove }) => {
         <DateSection taskId={task?.id} dueDate={task?.dueDate} />
 
         <button
-          className={`flex items-center gap-2 p-2 rounded text-sm transition ${isOpenLabel ? "bg-blue-100 text-blue-700" : "bg-gray-200 hover:bg-gray-300"
-            }`}
-        >
+          onClick={() => setIsOpenCheckList(prev => !prev)}
+          className="flex w-full items-center gap-2 bg-gray-200 p-2 rounded text-sm hover:bg-gray-300" >
           <CheckSquare size={16} /> Checklist
         </button>
+        {isOpenCheckList && (
+          <CheckList taskId={task.id} onClose={() => setIsOpenCheckList(false)} />
+        )}
 
-        <Attachment taskId={task.id} showList={false} showUpload={true}/>
+        <Attachment
+          taskId={task.id}
+          showList={false}
+          showUpload={true}
+          uploadingFile={uploadingFile}
+          setUploadingFile={setUploadingFile}
+        />
 
       </div>
 

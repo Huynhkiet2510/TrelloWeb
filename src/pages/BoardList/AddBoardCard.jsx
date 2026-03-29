@@ -13,9 +13,9 @@ const AddBoardCard = ({ value, onChange, onAdd }) => (
     <button
       onClick={onAdd}
       disabled={!value.trim()}
-      className="w-full bg-[#4E96C2] hover:bg-[#5da8d6] disabled:opacity-40 
+      className="w-full bg-[#4E96C2] hover:bg-[#5da8d6] 
                  text-white font-bold py-1.5 rounded text-sm transition-colors 
-                 shadow-md active:scale-95"
+                 shadow-md  disabled:opacity-40  disabled:cursor-not-allowed"
     >
       + Add board
     </button>

@@ -19,7 +19,6 @@ const BoardItem = ({
             value={editTitle}
             onChange={(e) => setEditTitle(e.target.value)}
             onClick={(e) => e.stopPropagation()}
-            onBlur={() => onUpdate(board.id)}
             onKeyDown={(e) => {
               if (e.key === 'Enter') onUpdate(board.id);
               if (e.key === 'Escape') onStartEdit(null); 

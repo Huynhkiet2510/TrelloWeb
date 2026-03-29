@@ -4,10 +4,9 @@ import DescriptionSection from './Description/DescriptionSection';
 import ChecklistSection from './CheckList/ChecklistSection';
 import Attachment from "./Attachment/Attachment"
 
-const TaskDetailContent = ({ task }) => {
+const TaskDetailContent = ({ task, uploadingFile, setUploadingFile, }) => {
 
-  const { updateDescription, addChecklistItem, toggleChecklistItem, removeChecklistItem } = useDetailTaskActions(task);
-
+  const { removeChecklist, addChecklistItem, updateDescription, toggleChecklistItem, removeChecklistItem } = useDetailTaskActions(task);
   if (!task) return <div className="p-6 text-gray-500 text-center">Đang tải dữ liệu...</div>;
 
   return (
@@ -18,15 +17,22 @@ const TaskDetailContent = ({ task }) => {
           initialDescription={task.description}
           onSave={updateDescription}
         />
-        <Attachment taskId={task.id} showList={true} showUpload={false} />
+        <Attachment
+          taskId={task.id}
+          showList={true}
+          showUpload={false}
+          uploadingFile={uploadingFile}
+          setUploadingFile={setUploadingFile}
+        />
 
       </div>
 
       <ChecklistSection
-        task={task}
+        taskId={task.id}
         onAdd={addChecklistItem}
         onToggle={toggleChecklistItem}
-        onRemove={removeChecklistItem}
+        onRemoveCheckList={removeChecklist}
+        onRemoveItem={removeChecklistItem}
       />
     </div>
   );

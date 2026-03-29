@@ -1,9 +1,11 @@
-import React from 'react';
+import React from "react";
 
-const AddColumnForm = ({ 
-    isAdding, setIsAdding, 
-    title, setTitle, 
-    onSubmit 
+const AddColumnForm = ({
+    isAdding,
+    setIsAdding,
+    title,
+    setTitle,
+    onSubmit,
 }) => {
     if (!isAdding) {
         return (
@@ -20,8 +22,8 @@ const AddColumnForm = ({
 
     return (
         <div className="shrink-0">
-            <form 
-                onSubmit={onSubmit} 
+            <form
+                onSubmit={onSubmit}
                 className="bg-[#f1f2f4] min-w-[280px] p-2 rounded-lg shadow-md"
             >
                 <input
@@ -32,15 +34,24 @@ const AddColumnForm = ({
                     onChange={(e) => setTitle(e.target.value)}
                 />
                 <div className="flex items-center gap-2 mt-2">
-                    <button 
-                        type="submit" 
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded text-sm font-medium transition"
+                    <button
+                        type="submit"
+                        disabled={!title.trim()}
+                        className={`px-3 py-1.5 rounded text-sm font-medium transition-all duration-200 bg-green-600 text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400
+                                   disabled:bg-gray-200
+                                   disabled:text-gray-400
+                                     disabled:cursor-not-allowed
+                                   
+  `}
                     >
-                        Add 
+                        Add
                     </button>
-                    <button 
-                        type="button" 
-                        onClick={() => { setIsAdding(false); setTitle(""); }} 
+                    <button
+                        type="button"
+                        onClick={() => {
+                            setIsAdding(false);
+                            setTitle("");
+                        }}
                         className="text-gray-500 hover:text-gray-800 p-1 px-2 text-xl"
                     >
                         ✕

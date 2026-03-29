@@ -22,8 +22,7 @@ const TaskDetailHeader = ({ column, task, onClose }) => {
                                 autoFocus
                                 className="text-sm font-bold p-1 w-full border-2 border-blue-500 rounded outline-none"
                                 value={newTaskTitle}
-                                onChange={(e) => setNewTaskTitle(e.target.value)}
-                                onBlur={setNewTaskTitle}
+                                onChange={(e) => setNewTaskTitle(e.target.value)}                   
                                 onKeyDown={handleKeyDown}
                             />
                         )
