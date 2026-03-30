@@ -29,7 +29,7 @@ const AddColumnForm = ({
                 <input
                     autoFocus
                     className="w-full p-2 rounded border-2 border-blue-500 outline-none text-sm"
-                    placeholder="Nhập tiêu đề danh sách..."
+                    placeholder="Enter new column..."
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                 />

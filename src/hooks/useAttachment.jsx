@@ -7,7 +7,6 @@ import {
     deleteDoc,
     doc,
     orderBy,
-    serverTimestamp
 } from 'firebase/firestore';
 
 import { useEffect, useState } from 'react';

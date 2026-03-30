@@ -7,7 +7,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../../../firebase";
 
-const CheckList = ({ taskId, onClose }) => {
+const CheckListModal = ({ taskId, onClose }) => {
   const [newCheckList, setNewCheckList] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -55,16 +55,15 @@ const CheckList = ({ taskId, onClose }) => {
         </button>
       </div>
 
-      {/* Input */}
       <div className="flex flex-col gap-2">
-        <label className="text-sm text-gray-500">CheckList</label>
+        <label className="text-sm text-gray-500">Title</label>
 
         <input
           type="text"
           value={newCheckList}
           onChange={(e) => setNewCheckList(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Nhập nội dung..."
+          placeholder="Enter title..."
           className="border p-2 rounded outline-none focus:border-blue-500 text-sm"
         />
 
@@ -75,7 +74,7 @@ const CheckList = ({ taskId, onClose }) => {
           className={`p-2 rounded text-sm font-medium transition ${
             !newCheckList.trim() || loading
               ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-              : "bg-blue-500 text-white hover:bg-blue-600"
+              : "bg-green-600 text-white hover:bg-green-700"
           }`}
         >
           {loading ? "Adding..." : "Add"}
@@ -85,4 +84,4 @@ const CheckList = ({ taskId, onClose }) => {
   );
 };
 
-export default CheckList;
+export default CheckListModal;

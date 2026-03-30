@@ -72,7 +72,7 @@ const ChecklistGroup = ({
             <button
               disabled={!text.trim()}
               onClick={handleAdd}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded text-sm font-medium disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed">
+              className="bg-green-600 hover:bg-green-700 text-white px-4 py-1.5 rounded text-sm font-medium disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed">
               Add
             </button>
             <button onClick={handleCancel} className="p-1.5 hover:bg-gray-200 rounded text-gray-500">

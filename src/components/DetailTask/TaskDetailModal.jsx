@@ -12,17 +12,13 @@ const ModalDetailTask = ({ taskId, onClose, onRemove, column }) => {
     const task = useSelector((state) => selectTaskById(state, taskId));
     const allLabels = useSelector((state) => state.label.items);
 
-
     if (!task) return null;
 
-    const hasTaskInfo =
-        task?.labels?.length > 0 ||
-        task?.dueDate;
+    const hasTaskInfo = task?.labels?.length > 0 ||  task?.dueDate;
 
 
     return (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 transition-opacity">
-
 
             <div className="bg-white w-[900px] h-[700px] rounded-xl shadow-2xl flex flex-col overflow-hidden relative z-10">
 
@@ -36,7 +32,7 @@ const ModalDetailTask = ({ taskId, onClose, onRemove, column }) => {
                                     Labels
                                 </p>
                                 <div className="flex gap-2 flex-wrap">
-                                    {task.labels.map((labelId) => {
+                                    {task?.labels?.map((labelId) => {
                                         const labelData = allLabels.find((l) => l.id === labelId);
                                         return labelData ? (
                                             <div
@@ -51,6 +47,7 @@ const ModalDetailTask = ({ taskId, onClose, onRemove, column }) => {
                                 </div>
                             </div>
                         )}
+
                         {task?.dueDate && (
                             <div>
                                 <p className="text-xs font-semibold text-gray-500 mb-2 uppercase">

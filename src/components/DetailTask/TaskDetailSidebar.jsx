@@ -6,7 +6,7 @@ import Labels from "./Labels/Labels";
 import DateSection from "./Date/DateSection";
 import ConfirmModal from '../ConfirmModal/ConfirmModal';
 import Attachment from "./Attachment/Attachment";
-import CheckList from "./CheckList/CheckList";
+import CheckList from "./CheckList/CheckListModal";
 
 const TaskDetailSidebar = ({ task, onRemove, uploadingFile, setUploadingFile }) => {
   const [isOpenLabel, setIsOpenLabel] = useState(false);

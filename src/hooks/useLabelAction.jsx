@@ -31,6 +31,7 @@ export const useLabelAction = (task) => {
             color: labelColor,
             updatedAt: Date.now()
         };
+        
 
         try {
             if (editingLabelId) {

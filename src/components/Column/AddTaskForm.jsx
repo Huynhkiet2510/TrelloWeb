@@ -17,7 +17,7 @@ const AddTaskForm = ({ isOpen, setIsOpen, title, setTitle, onSave, onKeyDown }) 
         <div className='mt-3'>
             <textarea
                 autoFocus
-                placeholder="Nhập nội dung thẻ..."
+                placeholder="Enter new task..."
                 value={title}
 
                 onChange={(e) => setTitle(e.target.value)}

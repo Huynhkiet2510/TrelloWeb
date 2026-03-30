@@ -39,7 +39,7 @@ const Navbar = ({ board}) => {
           type="text"
           value={searchQuery}
           onChange={(e) => dispatch(setSearchQuery(e.target.value))}
-          placeholder="Search cards..."
+          placeholder="Search tasks..."
           className="bg-transparent outline-none px-2 text-sm placeholder-white w-full"
         />
       </div>
